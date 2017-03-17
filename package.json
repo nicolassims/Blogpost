@@ -1,0 +1,11 @@
+{
+  "name": "blogpost",
+  "version": "1.0.0",
+  "description": "A project built to follow BDH's blogpost",
+  "main": "index.js",
+  "scripts": {
+    "start": "node bin/server"
+  },
+  "author": "Nicolas Sims",
+  "license": "ISC"
+}
