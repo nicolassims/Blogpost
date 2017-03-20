@@ -21,18 +21,19 @@ class app {
                     response.end(string, 'binary');
                 }
             };
+            console.log(request.url);
             if (request.url.indexOf('.css') >= 0) {
                 this.render(request.url.slice(1), 'text/css', httpHandler, 'utf-8');
             } else if (request.url.indexOf('.js') >= 0) {
                 this.render(request.url.slice(1), 'application/javascript', httpHandler, 'utf-8');
             } else if (request.url.indexOf('about') >= 0) {
                 this.render('about.html', 'text/html', httpHandler, 'utf-8');
-            } else if (request.url.indexOf('/') >= 0) {
-                this.render('index.html', 'text/html', httpHandler, 'utf-8');
             } else if (request.url.indexOf('.png') >= 0) {
                 this.render(request.url.slice(1), 'image/png', httpHandler, 'binary');
-            }  else if (request.url.indexOf('.jpg') >= 0) {
+            } else if (request.url.indexOf('.jpg') >= 0) {
                 this.render(request.url.slice(1), 'image/jpeg', httpHandler, 'binary');
+            } else if (request.url.indexOf('/') >= 0) {
+                this.render('index.html', 'text/html', httpHandler, 'utf-8');
             } else {
                 this.render(`HEY! What you're looking for: It's not here!`, 'text/html', httpHandler, 'utf-8');
             }
