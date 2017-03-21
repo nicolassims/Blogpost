@@ -1,11 +1,16 @@
 {
-  "name": "blogpost",
-  "version": "1.0.0",
-  "description": "A project built to follow BDH's blogpost",
-  "main": "index.js",
+  "name": "nodewebserverlesson",
+  "version": "0.0.1",
+  "description": "Demo Code",
+  "main": "bin/server",
   "scripts": {
     "start": "node bin/server"
   },
-  "author": "Nicolas Sims",
-  "license": "ISC"
+  "author": "Howard Bates",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "latest",
+    "formidable": "latest",
+    "nedb": "latest"
+  }
 }
