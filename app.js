@@ -1,6 +1,9 @@
+// todo:
+
 "use strict";
-const DATA_HANDLER = require('./node/DataHandler');
+
 class app {
+
     constructor() {
         this.ejsData = null;
         this.user = null;
@@ -11,7 +14,6 @@ class app {
         const HTTP = require('http');
         const PORT = 8000;
         const EJS = require('ejs');
-
         HTTP.createServer((request, response) => {
             let httpHandler = (error, string, contentType) => {
                 if (error) {
@@ -21,7 +23,6 @@ class app {
                     response.writeHead(200, {'Content-Type': contentType});
                     response.end(string, 'utf-8');
                 } else if (contentType.indexOf('html') >= 0) {
-                    console.log(`Rendering EJS`);
                     response.writeHead(200, {'Content-Type': contentType});
                     response.end(EJS.render(string, {
                         data: this.ejsData,
@@ -38,14 +39,18 @@ class app {
                 this.render(request.url.slice(1), 'application/javascript', httpHandler, 'utf-8');
             } else if (request.url.indexOf('.png') >= 0) {
                 this.render(request.url.slice(1), 'image/png', httpHandler, 'binary');
+            } else if (request.url.indexOf('.ejs') >= 0) {
+                this.render(request.url.slice(1), 'text/html', httpHandler, 'utf-8');
+            } else if (request.url.indexOf('.html') >= 0) {
+                this.render(request.url.slice(1), 'text/html', httpHandler, 'utf-8');
             } else if (request.url.indexOf('/') >= 0) {
                 this.render('public/views/index.ejs', 'text/html', httpHandler, 'utf-8');
             } else {
                 this.render(`HEY! What you're looking for: It's not here!`, 'text/html', httpHandler, 'utf-8');
             }
-
         }).listen(PORT);
     }
+
     render(path, contentType, callback, encoding) {
         const FS = require('fs');
         FS.readFile(path, encoding ? encoding : 'utf-8', (error, string) => {
@@ -53,4 +58,5 @@ class app {
         });
     }
 }
+
 module.exports = app;
