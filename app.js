@@ -1,18 +1,14 @@
-// todo:
-
 "use strict";
-
+const DATA_HANDLER = require('./node/Data_Handler');
 class app {
-
     constructor() {
         this.ejsData = null;
         this.user = null;
         this.loadServer();
     }
-
     loadServer() {
         const HTTP = require('http');
-        const PORT = 8000;
+        const PORT = 8005;
         const EJS = require('ejs');
         HTTP.createServer((request, response) => {
             let httpHandler = (error, string, contentType) => {
@@ -33,16 +29,28 @@ class app {
                     response.end(string, 'binary');
                 }
             };
-            if (request.url.indexOf('.css') >= 0) {
+            if (request.method === 'POST') {
+                if (request.headers['x-requested-with'] === 'XMLHttpRequest0') {
+                    request.on('data', (data) => {
+                        this.user = DATA_HANDLER.handleUserData(data.toString('utf8'));
+                        if (this.user !== 'false') {
+                            response.writeHead(200, {'content-type': 'application/json'});
+                            response.end(this.user);
+                        } else {
+                            response.writeHead(200, {'content-type': 'text/plain'});
+                            response.end('false');
+                        }
+                    });
+                } else {
+                    response.writeHead(405, "Method not supported", {'Content-Type': 'text/html'});
+                    response.end('<html><head><title>405 - Method not supported</title></head><body><h1>Method not supported.</h1></body></html>');
+                }
+            } else if (request.url.indexOf('.css') >= 0) {
                 this.render(request.url.slice(1), 'text/css', httpHandler, 'utf-8');
             } else if (request.url.indexOf('.js') >= 0) {
                 this.render(request.url.slice(1), 'application/javascript', httpHandler, 'utf-8');
             } else if (request.url.indexOf('.png') >= 0) {
                 this.render(request.url.slice(1), 'image/png', httpHandler, 'binary');
-            } else if (request.url.indexOf('.ejs') >= 0) {
-                this.render(request.url.slice(1), 'text/html', httpHandler, 'utf-8');
-            } else if (request.url.indexOf('.html') >= 0) {
-                this.render(request.url.slice(1), 'text/html', httpHandler, 'utf-8');
             } else if (request.url.indexOf('/') >= 0) {
                 this.render('public/views/index.ejs', 'text/html', httpHandler, 'utf-8');
             } else {
@@ -50,7 +58,6 @@ class app {
             }
         }).listen(PORT);
     }
-
     render(path, contentType, callback, encoding) {
         const FS = require('fs');
         FS.readFile(path, encoding ? encoding : 'utf-8', (error, string) => {
@@ -58,5 +65,4 @@ class app {
         });
     }
 }
-
 module.exports = app;
